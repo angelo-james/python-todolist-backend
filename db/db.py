@@ -55,5 +55,18 @@ def update_user(id):
 
   return jsonify({'result': result})
 
+@app.route('/api/users/<id>', methods=['DELETE'])
+def delete_user(id):
+  users = mongo.db.users
+
+  response = users.delete_one({'_id': ObjectId(id)})
+
+  if response.deleted_count == 1:
+    result = {'message': 'user deleted successfully'}
+  else:
+    result = {'message': 'failed to delete user'}
+
+  return jsonify({'result': result})
+
 if __name__ == '__main__':
   app.run(debug=True)
