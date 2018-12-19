@@ -13,7 +13,7 @@ mongo = PyMongo(app)
 CORS(app)
 
 @app.route('/api/users', methods=['GET'])
-def get_all_customers():
+def get_all_users():
   users = mongo.db.users
   result = []
 
@@ -27,7 +27,7 @@ def get_all_customers():
   return jsonify(result)
 
 @app.route('/api/users', methods=['POST'])
-def add_customer():
+def add_users():
   users = mongo.db.users
   name = request.get_json()['name']
 
@@ -40,6 +40,18 @@ def add_customer():
   new_user = users.find_one({'_id': name_id})
 
   result = {'title': new_user['name']}
+
+  return jsonify({'result': result})
+
+@app.route('/api/users/<id>', methods=['PUT'])
+def update_user(id):
+  users = mongo.db.users
+  name = request.get_json()['name']
+
+  users.find_one_and_update({'_id': ObjectId(id)}, {'$set': {'name': name}}, upsert=False)
+  new_user = users.find_one({'_id': ObjectId(id)})
+
+  result = {'name': new_user['name']}
 
   return jsonify({'result': result})
 
